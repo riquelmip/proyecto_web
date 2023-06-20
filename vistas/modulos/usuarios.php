@@ -322,7 +322,7 @@ MODAL EDITAR USUARIO
 
                 <span class="input-group-addon"><i class="fa fa-credit-card"></i></span>
 
-                <input type="text" class="form-control input-lg" name="editarDocumentoIdentidad" placeholder="Ingresar documento de identidad" required>
+                <input type="text" class="form-control input-lg" name="editarDocumentoIdentidad"  id="editarDocumentoIdentidad" placeholder="Ingresar documento de identidad" required>
 
               </div>
 

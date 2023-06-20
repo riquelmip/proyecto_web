@@ -70,6 +70,7 @@ $(".tablas").on("click", ".btnEditarUsuario", function(){
 		dataType: "json",
 		success: function(respuesta){
 			
+			$("#editarDocumentoIdentidad").val(respuesta["documento_identidad"]);
 			$("#editarNombre").val(respuesta["nombre"]);
 			$("#editarUsuario").val(respuesta["usuario"]);
 			$("#editarPerfil").html(respuesta["perfil"]);
