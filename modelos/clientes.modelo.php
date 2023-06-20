@@ -5,7 +5,11 @@ require_once "conexion.php";
 class ModeloClientes
 {
 
-	static public function mdlMostrarPaises($tabla,)
+	/*=============================================
+	MOSTRAR PAISES
+	=============================================*/
+
+	static public function mdlMostrarPaises($tabla)
 	{
 
 		$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla");
@@ -27,7 +31,7 @@ class ModeloClientes
 	static public function mdlMostrarClientes($tabla)
 	{
 
-		$stmt = Conexion::conectar()->prepare("SELECT c.nombre_cliente, c.email_contacto, c.id_pais, p.nombre as pais FROM $tabla c INNER JOIN paises p ON p.id = c.id_pais");
+		$stmt = Conexion::conectar()->prepare("SELECT c.id, c.nombre_cliente, c.email_contacto, c.id_pais, p.nombre as pais FROM $tabla c INNER JOIN paises p ON p.id = c.id_pais");
 
 		$stmt->execute();
 
@@ -38,8 +42,28 @@ class ModeloClientes
 		$stmt = null;
 	}
 
+	static public function mdlMostrarCliente($tabla, $valor)
+	{
+
+
+
+		$stmt = Conexion::conectar()->prepare("SELECT c.id, c.nombre_cliente, c.email_contacto, c.id_pais, p.nombre as pais FROM $tabla c INNER JOIN paises p ON p.id = c.id_pais WHERE c.id = :id");
+
+		$stmt->bindParam(":id", $valor, PDO::PARAM_STR);
+
+		$stmt->execute();
+
+		return $stmt->fetch();
+		
+
+
+		$stmt->close();
+
+		$stmt = null;
+	}
+
 	/*=============================================
-	REGISTRO DE Cliente
+	REGISTRO DE CLIENTES
 	=============================================*/
 
 	static public function mdlIngresarCliente($tabla, $datos)
@@ -65,20 +89,18 @@ class ModeloClientes
 	}
 
 	/*=============================================
-	EDITAR USUARIO
+	EDITAR CLIENTES
 	=============================================*/
 
-	static public function mdlEditarUsuario($tabla, $datos)
+	static public function mdlEditarCliente($tabla, $datos)
 	{
 
-		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET nombre = :nombre, password = :password, perfil = :perfil, foto = :foto, documento_identidad = :documento_identidad WHERE usuario = :usuario");
+		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET nombre_cliente = :nombre_cliente, email_contacto = :email_contacto, id_pais = :id_pais WHERE id = :id");
 
-		$stmt->bindParam(":nombre", $datos["nombre"], PDO::PARAM_STR);
-		$stmt->bindParam(":password", $datos["password"], PDO::PARAM_STR);
-		$stmt->bindParam(":perfil", $datos["perfil"], PDO::PARAM_STR);
-		$stmt->bindParam(":foto", $datos["foto"], PDO::PARAM_STR);
-		$stmt->bindParam(":usuario", $datos["usuario"], PDO::PARAM_STR);
-		$stmt->bindParam(":documento_identidad", $datos["documento_identidad"], PDO::PARAM_STR);
+		$stmt->bindParam(":nombre_cliente", $datos["nombre_cliente"], PDO::PARAM_STR);
+		$stmt->bindParam(":email_contacto", $datos["email_contacto"], PDO::PARAM_STR);
+		$stmt->bindParam(":id_pais", $datos["id_pais"], PDO::PARAM_INT);
+		$stmt->bindParam(":id", $datos["id"], PDO::PARAM_INT);
 
 		if ($stmt->execute()) {
 
@@ -93,36 +115,12 @@ class ModeloClientes
 		$stmt = null;
 	}
 
-	/*=============================================
-	ACTUALIZAR USUARIO
-	=============================================*/
-
-	static public function mdlActualizarUsuario($tabla, $item1, $valor1, $item2, $valor2)
-	{
-
-		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET $item1 = :$item1 WHERE $item2 = :$item2");
-
-		$stmt->bindParam(":" . $item1, $valor1, PDO::PARAM_STR);
-		$stmt->bindParam(":" . $item2, $valor2, PDO::PARAM_STR);
-
-		if ($stmt->execute()) {
-
-			return "ok";
-		} else {
-
-			return "error";
-		}
-
-		$stmt->close();
-
-		$stmt = null;
-	}
 
 	/*=============================================
-	BORRAR USUARIO
+	BORRAR CLIENTE
 	=============================================*/
 
-	static public function mdlBorrarUsuario($tabla, $datos)
+	static public function mdlBorrarCliente($tabla, $datos)
 	{
 
 		$stmt = Conexion::conectar()->prepare("DELETE FROM $tabla WHERE id = :id");

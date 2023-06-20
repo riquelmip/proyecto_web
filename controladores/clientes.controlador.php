@@ -3,29 +3,31 @@
 class ControladorClientes
 {
 
-	public function alertaError($msg)
+	static public  function alertaError($msg)
 	{
-		return '<script>
+		return
+			'<script>
 
-		swal({
+				swal({
 
-			type: "error",
-			title: ' . $msg . ',
-			showConfirmButton: true,
-			confirmButtonText: "Cerrar"
+					type: "error",
+					title: \'' . $msg .
+			'\',
+					showConfirmButton: true,
+					confirmButtonText: "Cerrar"
 
-		}).then(function(result){
+				}).then(function(result){
 
-			if(result.value){
-			
-				window.location = "usuarios";
+					if(result.value){
+					
+						window.location = "clientes";
 
-			}
+					}
 
-		});
-	
+				});
 
-	</script>';
+
+			</script>';
 	}
 
 	static public function ctrMostrarPaises()
@@ -37,6 +39,7 @@ class ControladorClientes
 
 		return $respuesta;
 	}
+
 	/*=============================================
 	REGISTRO DE CLIENTE
 	=============================================*/
@@ -45,15 +48,14 @@ class ControladorClientes
 	{
 
 		if (isset($_POST["nuevoNombre"]) && isset($_POST["nuevoEmail"]) && isset($_POST["nuevoPais"])) {
-
-			if (preg_match('/^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ ]+$/', $_POST["nuevoNombre"])) {
-				self::alertaError('Revise el campo de nombre');
-			} else if (filter_var($_POST["nuevoEmail"], FILTER_VALIDATE_EMAIL)) {
-				self::alertaError('El campo email debe ser un email');
+			if (!preg_match('/^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ ]+$/', $_POST["nuevoNombre"])) {
+				echo self::alertaError('Revise el campo de nombre');
+			} else if (!filter_var($_POST["nuevoEmail"], FILTER_VALIDATE_EMAIL)) {
+				echo self::alertaError('El campo email debe ser un email');
 			} else if (intval($_POST["nuevoPais"]) == 0) {
-				self::alertaError('Debe seleccionar un pais');
+				echo self::alertaError('Debe seleccionar un pais');
 			} else {
-
+				
 				$tabla = "clientes";
 
 				$datos = array(
@@ -79,7 +81,7 @@ class ControladorClientes
 
 						if(result.value){
 						
-							window.location = "usuarios";
+							window.location = "clientes";
 
 						}
 
@@ -110,191 +112,73 @@ class ControladorClientes
 	EDITAR CLIENTE
 	=============================================*/
 
-	static public function ctrEditarUsuario()
+	static public function ctrEditarCliente()
 	{
 
-		if (isset($_POST["editarUsuario"])) {
+		if (isset($_POST["editarNombre"]) && isset($_POST["editarEmail"]) && isset($_POST["editarPais"])) {
+			if (!preg_match('/^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ ]+$/', $_POST["editarNombre"])) {
+				echo self::alertaError('Revise el campo de nombre');
+			} else if (!filter_var($_POST["editarEmail"], FILTER_VALIDATE_EMAIL)) {
+				echo self::alertaError('El campo email debe ser un email');
+			} else if (intval($_POST["editarPais"]) == 0) {
+				echo self::alertaError('Debe seleccionar un pais');
+			} else {
 
-			if (preg_match('/^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ ]+$/', $_POST["editarNombre"]) && preg_match('/^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ\s]+$/', $_POST["editarDocumentoIdentidad"])) {
-
-				/*=============================================
-				VALIDAR IMAGEN
-				=============================================*/
-
-				$ruta = $_POST["fotoActual"];
-
-				if (isset($_FILES["editarFoto"]["tmp_name"]) && !empty($_FILES["editarFoto"]["tmp_name"])) {
-
-					list($ancho, $alto) = getimagesize($_FILES["editarFoto"]["tmp_name"]);
-
-					$nuevoAncho = 500;
-					$nuevoAlto = 500;
-
-					/*=============================================
-					CREAMOS EL DIRECTORIO DONDE VAMOS A GUARDAR LA FOTO DEL CLIENTE
-					=============================================*/
-
-					$directorio = "vistas/img/usuarios/" . $_POST["editarUsuario"];
-
-					/*=============================================
-					PRIMERO PREGUNTAMOS SI EXISTE OTRA IMAGEN EN LA BD
-					=============================================*/
-
-					if (!empty($_POST["fotoActual"])) {
-
-						unlink($_POST["fotoActual"]);
-					} else {
-
-						mkdir($directorio, 0755);
-					}
-
-					/*=============================================
-					DE ACUERDO AL TIPO DE IMAGEN APLICAMOS LAS FUNCIONES POR DEFECTO DE PHP
-					=============================================*/
-
-					if ($_FILES["editarFoto"]["type"] == "image/jpeg") {
-
-						/*=============================================
-						GUARDAMOS LA IMAGEN EN EL DIRECTORIO
-						=============================================*/
-
-						$aleatorio = mt_rand(100, 999);
-
-						$ruta = "vistas/img/usuarios/" . $_POST["editarUsuario"] . "/" . $aleatorio . ".jpg";
-
-						$origen = imagecreatefromjpeg($_FILES["editarFoto"]["tmp_name"]);
-
-						$destino = imagecreatetruecolor($nuevoAncho, $nuevoAlto);
-
-						imagecopyresized($destino, $origen, 0, 0, 0, 0, $nuevoAncho, $nuevoAlto, $ancho, $alto);
-
-						imagejpeg($destino, $ruta);
-					}
-
-					if ($_FILES["editarFoto"]["type"] == "image/png") {
-
-						/*=============================================
-						GUARDAMOS LA IMAGEN EN EL DIRECTORIO
-						=============================================*/
-
-						$aleatorio = mt_rand(100, 999);
-
-						$ruta = "vistas/img/usuarios/" . $_POST["editarUsuario"] . "/" . $aleatorio . ".png";
-
-						$origen = imagecreatefrompng($_FILES["editarFoto"]["tmp_name"]);
-
-						$destino = imagecreatetruecolor($nuevoAncho, $nuevoAlto);
-
-						imagecopyresized($destino, $origen, 0, 0, 0, 0, $nuevoAncho, $nuevoAlto, $ancho, $alto);
-
-						imagepng($destino, $ruta);
-					}
-				}
-
-				$tabla = "usuarios";
-
-				if ($_POST["editarPassword"] != "") {
-
-					if (preg_match('/^[a-zA-Z0-9]+$/', $_POST["editarPassword"])) {
-
-						$encriptar = crypt($_POST["editarPassword"], '$2a$07$asxx54ahjppf45sd87a5a4dDDGsystemdev$');
-					} else {
-
-						echo '<script>
-
-								swal({
-									  type: "error",
-									  title: "¡La contraseña no puede ir vacía o llevar caracteres especiales!",
-									  showConfirmButton: true,
-									  confirmButtonText: "Cerrar"
-									  }).then(function(result) {
-										if (result.value) {
-
-										window.location = "usuarios";
-
-										}
-									})
-
-						  	</script>';
-
-						return;
-					}
-				} else {
-
-					$encriptar = $_POST["passwordActual"];
-				}
+				$tabla = "clientes";
 
 				$datos = array(
-					"nombre" => $_POST["editarNombre"],
-					"usuario" => $_POST["editarUsuario"],
-					"password" => $encriptar,
-					"perfil" => $_POST["editarPerfil"],
-					"foto" => $ruta,
-					"documento_identidad" => $_POST["editarDocumentoIdentidad"],
+					'id' => $_POST["idCliente"],
+					"nombre_cliente" => $_POST["editarNombre"],
+					"email_contacto" => $_POST["editarEmail"],
+					"id_pais" => $_POST["editarPais"]
 				);
 
-				$respuesta = ModeloUsuarios::mdlEditarUsuario($tabla, $datos);
+				$respuesta = ModeloClientes::mdlEditarCliente($tabla, $datos);
 
 				if ($respuesta == "ok") {
 
-					echo '<script>
+					echo
+					'<script>
 
 					swal({
-						  type: "success",
-						  title: "El usuario ha sido editado correctamente",
-						  showConfirmButton: true,
-						  confirmButtonText: "Cerrar"
-						  }).then(function(result) {
-									if (result.value) {
 
-									window.location = "usuarios";
+						type: "success",
+						title: "¡El cliente ha sido editado correctamente!",
+						showConfirmButton: true,
+						confirmButtonText: "Cerrar"
 
-									}
-								})
+					}).then(function(result){
+
+						if(result.value){
+						
+							window.location = "clientes";
+
+						}
+
+					});
+				
 
 					</script>';
 				}
-			} else {
-
-				echo '<script>
-
-					swal({
-						  type: "error",
-						  title: "¡El nombre no puede ir vacío o llevar caracteres especiales!",
-						  showConfirmButton: true,
-						  confirmButtonText: "Cerrar"
-						  }).then(function(result) {
-							if (result.value) {
-
-							window.location = "usuarios";
-
-							}
-						})
-
-			  	</script>';
 			}
 		}
+
 	}
 
 	/*=============================================
 	BORRAR CLIENTE
 	=============================================*/
 
-	static public function ctrBorrarUsuario()
+	static public function ctrBorrarCliente()
 	{
 
-		if (isset($_GET["idUsuario"])) {
+		if (isset($_GET["idCliente"])) {
 
-			$tabla = "usuarios";
-			$datos = $_GET["idUsuario"];
+			$tabla = "clientes";
+			$datos = $_GET["idCliente"];
 
-			if ($_GET["fotoUsuario"] != "") {
 
-				unlink($_GET["fotoUsuario"]);
-				rmdir('vistas/img/usuarios/' . $_GET["usuario"]);
-			}
-
-			$respuesta = ModeloUsuarios::mdlBorrarUsuario($tabla, $datos);
+			$respuesta = ModeloClientes::mdlBorrarCliente($tabla, $datos);
 
 			if ($respuesta == "ok") {
 
@@ -309,7 +193,7 @@ class ControladorClientes
 					  }).then(function(result) {
 								if (result.value) {
 
-								window.location = "usuarios";
+								window.location = "clientes";
 
 								}
 							})
@@ -317,5 +201,19 @@ class ControladorClientes
 				</script>';
 			}
 		}
+	}
+
+	/*=============================================
+	MOSTRAR CLIENTE
+	=============================================*/
+
+	static public function ctrMostrarCliente($valor)
+	{
+
+		$tabla = "clientes";
+
+		$respuesta = ModeloClientes::mdlMostrarCliente($tabla, $valor);
+
+		return $respuesta;
 	}
 }

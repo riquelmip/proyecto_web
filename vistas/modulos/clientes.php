@@ -55,14 +55,14 @@ if ($_SESSION["perfil"] == "Especial" || $_SESSION["perfil"] == "Vendedor") {
             $item = null;
             $valor = null;
 
-            $clientes = ControladorClientes::ctrMostrarClientes();
+            $clientes = ControladorClientes::ctrMostrarClientes($item, $valor);
 
             foreach ($clientes as $key => $value) {
 
               echo ' <tr>
                   <td>' . ($key + 1) . '</td>
                   <td>' . $value["nombre_cliente"] . '</td>
-                  <td>' . $value["email"] . '</td>
+                  <td>' . $value["email_contacto"] . '</td>
                   <td>' . $value["pais"] . '</td>';
 
 
@@ -169,7 +169,7 @@ MODAL AGREGAR CLIENTE
 
                 <span class="input-group-addon"><i class="fa fa-map"></i></span>
 
-                <select class="form-control input-lg" name="nuevoPais">
+                <select class="form-control input-lg" name="nuevoPais" required>
 
                   <option value="0">Selecionar País</option>
 
@@ -210,8 +210,8 @@ MODAL AGREGAR CLIENTE
 
         <?php
 
-        $crearCliente = new ControladorUsuarios();
-        $crearCliente->ctrCrearUsuario();
+        $crearCliente = new ControladorClientes();
+        $crearCliente->ctrCrearCliente();
 
         ?>
 
@@ -227,7 +227,7 @@ MODAL AGREGAR CLIENTE
 MODAL EDITAR CLIENTE
 ======================================-->
 
-<div id="modalEditarUsuario" class="modal fade" role="dialog">
+<div id="modalEditarCliente" class="modal fade" role="dialog">
 
   <div class="modal-dialog">
 
@@ -243,7 +243,7 @@ MODAL EDITAR CLIENTE
 
           <button type="button" class="close" data-dismiss="modal">&times;</button>
 
-          <h4 class="modal-title">Editar usuario</h4>
+          <h4 class="modal-title">Editar Cliente</h4>
 
         </div>
 
@@ -255,20 +255,7 @@ MODAL EDITAR CLIENTE
 
           <div class="box-body">
 
-            <!-- ENTRADA PARA EL DOCUMENTO -->
-
-            <div class="form-group">
-
-              <div class="input-group">
-
-                <span class="input-group-addon"><i class="fa fa-credit-card"></i></span>
-
-                <input type="text" class="form-control input-lg" name="editarDocumentoIdentidad" placeholder="Ingresar documento de identidad" required>
-
-              </div>
-
-            </div>
-
+            <input type="hidden" id="idCliente" name="idCliente">
 
             <!-- ENTRADA PARA EL NOMBRE -->
 
@@ -278,13 +265,13 @@ MODAL EDITAR CLIENTE
 
                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
 
-                <input type="text" class="form-control input-lg" id="editarNombre" name="editarNombre" value="" required>
+                <input type="text" class="form-control input-lg" name="editarNombre" id="editarNombre" placeholder="Ingresar nombre" required>
 
               </div>
 
             </div>
 
-            <!-- ENTRADA PARA EL CLIENTE -->
+            <!-- ENTRADA PARA EL EMAIL -->
 
             <div class="form-group">
 
@@ -292,65 +279,40 @@ MODAL EDITAR CLIENTE
 
                 <span class="input-group-addon"><i class="fa fa-key"></i></span>
 
-                <input type="text" class="form-control input-lg" id="editarUsuario" name="editarUsuario" value="" readonly>
+                <input type="email" class="form-control input-lg" name="editarEmail" placeholder="Ingresar email" id="editarEmail" required>
 
               </div>
 
             </div>
 
-            <!-- ENTRADA PARA LA CONTRASEÑA -->
+
+
+            <!-- ENTRADA PARA SELECCIONAR SU PAIS -->
 
             <div class="form-group">
 
               <div class="input-group">
 
-                <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                <span class="input-group-addon"><i class="fa fa-map"></i></span>
 
-                <input type="password" class="form-control input-lg" name="editarPassword" placeholder="Escriba la nueva contraseña">
+                <select class="form-control input-lg" name="editarPais" id="editarPais" required>
 
-                <input type="hidden" id="passwordActual" name="passwordActual">
+                  <option value="0">Selecionar País</option>
 
-              </div>
+                  <?php
+                  $paises = ControladorClientes::ctrMostrarPaises();
 
-            </div>
+                  foreach ($paises as $key => $value) {
 
-            <!-- ENTRADA PARA SELECCIONAR SU PERFIL -->
+                    echo ' <option value="' . $value["id"] . '">' . $value["nombre"] . '</option>';
+                  }
 
-            <div class="form-group">
 
-              <div class="input-group">
-
-                <span class="input-group-addon"><i class="fa fa-users"></i></span>
-
-                <select class="form-control input-lg" name="editarPerfil">
-
-                  <option value="" id="editarPerfil"></option>
-
-                  <option value="Administrador">Administrador</option>
-
-                  <option value="Especial">Especial</option>
-
-                  <option value="Vendedor">Vendedor</option>
+                  ?>
 
                 </select>
 
               </div>
-
-            </div>
-
-            <!-- ENTRADA PARA SUBIR FOTO -->
-
-            <div class="form-group">
-
-              <div class="panel">SUBIR FOTO</div>
-
-              <input type="file" class="nuevaFoto" name="editarFoto">
-
-              <p class="help-block">Peso máximo de la foto 2MB</p>
-
-              <img src="vistas/img/usuarios/default/anonymous.png" class="img-thumbnail previsualizarEditar" width="100px">
-
-              <input type="hidden" name="fotoActual" id="fotoActual">
 
             </div>
 
@@ -366,14 +328,14 @@ MODAL EDITAR CLIENTE
 
           <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Salir</button>
 
-          <button type="submit" class="btn btn-primary">Modificar usuario</button>
+          <button type="submit" class="btn btn-primary">Modificar cliente</button>
 
         </div>
 
         <?php
 
-        $editarUsuario = new ControladorUsuarios();
-        $editarUsuario->ctrEditarUsuario();
+        $editarCliente = new ControladorClientes();
+        $editarCliente->ctrEditarCliente();
 
         ?>
 
@@ -387,7 +349,7 @@ MODAL EDITAR CLIENTE
 
 <?php
 
-$borrarUsuario = new ControladorUsuarios();
-$borrarUsuario->ctrBorrarUsuario();
+$borrarCliente = new ControladorClientes();
+$borrarCliente->ctrBorrarCliente();
 
 ?>

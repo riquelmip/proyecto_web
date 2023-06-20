@@ -6,6 +6,7 @@ session_start();
 
 <!DOCTYPE html>
 <html>
+
 <head>
 
   <meta charset="utf-8">
@@ -18,7 +19,7 @@ session_start();
 
   <link rel="icon" href="vistas/img/plantilla/icono-negro.png">
 
-   <!--=====================================
+  <!--=====================================
   PLUGINS DE CSS
   ======================================-->
 
@@ -33,21 +34,21 @@ session_start();
 
   <!-- Theme style -->
   <link rel="stylesheet" href="vistas/dist/css/AdminLTE.css">
-  
+
   <!-- AdminLTE Skins -->
   <link rel="stylesheet" href="vistas/dist/css/skins/_all-skins.min.css">
 
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
-   <!-- DataTables -->
+  <!-- DataTables -->
   <link rel="stylesheet" href="vistas/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
   <link rel="stylesheet" href="vistas/bower_components/datatables.net-bs/css/responsive.bootstrap.min.css">
 
   <!-- iCheck for checkboxes and radio inputs -->
   <link rel="stylesheet" href="vistas/plugins/iCheck/all.css">
 
-   <!-- Daterange picker -->
+  <!-- Daterange picker -->
   <link rel="stylesheet" href="vistas/bower_components/bootstrap-daterangepicker/daterangepicker.css">
 
   <!-- Morris chart -->
@@ -59,13 +60,13 @@ session_start();
 
   <!-- jQuery 3 -->
   <script src="vistas/bower_components/jquery/dist/jquery.min.js"></script>
-  
+
   <!-- Bootstrap 3.3.7 -->
   <script src="vistas/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
   <!-- FastClick -->
   <script src="vistas/bower_components/fastclick/lib/fastclick.js"></script>
-  
+
   <!-- AdminLTE App -->
   <script src="vistas/dist/js/adminlte.min.js"></script>
 
@@ -77,7 +78,7 @@ session_start();
 
   <!-- SweetAlert 2 -->
   <script src="vistas/plugins/sweetalert2/sweetalert2.all.js"></script>
-   <!-- By default SweetAlert2 doesn't support IE. To enable IE 11 support, include Promise polyfill:-->
+  <!-- By default SweetAlert2 doesn't support IE. To enable IE 11 support, include Promise polyfill:-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js"></script>
 
   <!-- iCheck 1.0.1 -->
@@ -111,12 +112,12 @@ CUERPO DOCUMENTO
 ======================================-->
 
 <body class="hold-transition skin-blue sidebar-collapse sidebar-mini login-page">
- 
+
   <?php
 
-  if(isset($_SESSION["iniciarSesion"]) && $_SESSION["iniciarSesion"] == "ok"){
+  if (isset($_SESSION["iniciarSesion"]) && $_SESSION["iniciarSesion"] == "ok") {
 
-   echo '<div class="wrapper">';
+    echo '<div class="wrapper">';
 
     /*=============================================
     CABEZOTE
@@ -134,25 +135,23 @@ CUERPO DOCUMENTO
     CONTENIDO
     =============================================*/
 
-    if(isset($_GET["ruta"])){
+    if (isset($_GET["ruta"])) {
 
-      if($_GET["ruta"] == "inicio" ||
-         $_GET["ruta"] == "usuarios" ||  
-         $_GET["ruta"] == "clientes" ||        
-         $_GET["ruta"] == "salir"){
+      if (
+        $_GET["ruta"] == "inicio" ||
+        $_GET["ruta"] == "usuarios" ||
+        $_GET["ruta"] == "clientes" ||
+        $_GET["ruta"] == "salir"
+      ) {
 
-        include "modulos/".$_GET["ruta"].".php";
-
-      }else{
+        include "modulos/" . $_GET["ruta"] . ".php";
+      } else {
 
         include "modulos/404.php";
-
       }
-
-    }else{
+    } else {
 
       include "modulos/inicio.php";
-
     }
 
     /*=============================================
@@ -162,19 +161,19 @@ CUERPO DOCUMENTO
     include "modulos/footer.php";
 
     echo '</div>';
-
-  }else{
+  } else {
 
     include "modulos/login.php";
-
   }
 
   ?>
 
 
-<script src="vistas/js/plantilla.js"></script>
-<script src="vistas/js/usuarios.js"></script>
+  <script src="vistas/js/plantilla.js"></script>
+  <script src="vistas/js/usuarios.js"></script>
+  <script src="vistas/js/clientes.js"></script>
 
 
 </body>
+
 </html>
